@@ -1,0 +1,143 @@
+Included Files (important user-side scripts marked by *):
+
+
+---
+General Tools:
+
+* cz_tools.py
+Collection of valuable helper tools for working with Flash AMR and particle data.
+(If you need to load or convert anything Flash-related look here first!)
+
+* cl_objcol.py
+Scripts for creating column density maps from Flash AMR data.
+Can be used on regions or the entire domain.
+(Includes plotting routines)
+
+cz_selfgrav.py
+Scripts used to calculate self-gravity and/or external gravity of cell selections from AMR data.
+Mainly useful for quantifying tidal interactions.
+
+* automov.py
+Automation Script using ffmpeg for combining sets of plots into videos
+
+constants.py
+Contains physical constants and units used by other scripts
+
+var_settings_v3.py
+Used to hold parameters used when plotting certain variables through other scripts.
+Useful for getting consistent scaling settings, units, and value ranges when plotting stuff from multiple other scripts.
+(Review/Edit if plots seem to show wrong range)
+
+sinkpart.py
+Helper tools for opening and working with flash sink particle data as contained in plotfiles.
+
+---
+Object detection:
+
+* cl_find_182.py
+Main object finder script for finding clouds / clumps / cores / dendrogram nodes in a flash plotfile. 
+
+cl_dendrofind.py
+Scripts used for creating conventional uniform-grid dendrograms through converting back and forth from AMR data.
+
+cz_astrodendro.py
+Scripts used for creating dendrograms through directly running astrodendro on AMR-based data 
+
+cl_fellwalk.py
+Scripts for using the Fellwalker algorithm directly on AMR grids to find objects (e.g. cores).
+(Usually controlled from cl_find)
+
+cl_fofg_142.py
+Scripts for finding objects defined through connected spaces satisfying a freely defined set of conditions,
+based on Neighbours-of-Neighbours (think Friends-of-Friends but for AMR data instead of SPH).
+Useful for finding e.g. molecular clouds and clumps.
+(Usually controlled from cl_find)
+
+cl_gaussfit.py
+Scripts for finding objects through fitting gaussians to AMR grid data.
+(Usually controlled from cl_find)
+
+cz_findfragment.py
+Helper scripts for filtering dendrogram nodes by collapse indicators. 
+
+
+---
+Reverse tracking for finding zoom region candidates:
+
+* cl_centertracks_17b.py
+Main script for running Euler-integration style reverse object tracking for finding zoom-worthy objects.
+(Creates object position tables, plots, and refinement statistic graphs)
+
+
+---
+Hierachical dendrogram tracking though tracer particles:
+
+* cz_trfrag_catalog.py
+Pre-compute graph structure from tracking over a list of multiple file
+by combining the node event labels found through cz_trfrag.
+Marks e.g. identity continuations, splits, mergers, and resegmentations of dendrogram nodes.
+(Saves graph for use in other scripts)
+
+* cz_trfragstat150.py
+Pre-compute a wide set of statistics for each dendrogram node.
+(Saves values for use in other scripts, no plotting routine included)
+
+* pl_trfrag_vst.py
+Create plots following the evolution of tracked objects.
+(Works on rudimentary level, but no nice plots yet)
+
+cz_tracerown.py
+Helper Scripts for figuring out containment and ownership relations
+for cell-based objects (e.g. dendrogram nodes), tracer particles, sink particles,
+and combinations of the former.
+
+cz_tracermatch.py
+Helper Scripts for calculating the scores used for matching tracer sets with each other. 
+
+cz_trfrag.py
+Helper Script containing the decision tree for mapping tracer matching scores from
+the dendrogram nodes of two consecutive plotfiles onto node event labels.
+(Saves events labels for each pair of consecutive plotfiles for use in graph building routine)
+
+
+---
+Library Tools:
+
+libmf/micflash.py
+Interface routine for anything regarding the Flash AMR data,
+including taks related to reconstructing/querying the underlying octree structure.
+
+libmf/micvar.py
+Interface layer for reading data stored in Flash plotfile.
+Holds formulae and provides recursive resolver which can be used for calculating 
+fields that can be derived from flash data.
+( Usually used through interface in micflash.py.
+  Use LoadPlotfile in cz_tools for loading the 'leafdata' and 'octree' variables used
+  all over the other scripts.
+  leafdata is the wrapper for working on plotfile data and derived quantities, e.g.
+  leafdata['dens'] returns the density field of all cells of the leaf blocks,
+  while leafdata['mass'] contains the gas mass contained in the grid cells.
+  Data shape: (lbl,iz,iy,ix), where lbl enumerates the leaf blocks,
+  while iz,iy,ix enumerate the cells of the selected blocks in the z-,y-,x-directions.
+  Leaf block indicies can be converted to whole-grid block indicies through the
+  leafdata.nodeid() member function.
+  )
+
+libmf/micplot.py
+Automation tools for simplifying plotting tasks connected to flash data.
+
+libmf/rpnparser.py
+Helper tool for reading in and resolving formulae given in RPN format (Reversed polish notation).
+Used in micvar.py, but also very useful otherwise.
+Note that the parser for handling string tokens can be loaded from an external function.
+( Fun part: You can build a recursively resolving algebra system from there:
+  1.) Bind the rpnparser to a getter function (the one evaluating thingy[...] )
+  2.) Loop that getter function back into the string token parser
+  )
+( In principle, it is also possible to build a system from here that
+  resolves conventional-style formulae: "Simply' use the Shunting yard algorithm
+  for casting the arithmetical expression into RPN form. (Be warned:
+  Implementing Shunting Yard is easy, but extracting the input tokens from
+  a continuous input string is stuff of nightmares.
+  )
+
