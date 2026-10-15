@@ -13,12 +13,16 @@ Scripts for creating column density maps from Flash AMR data.
 Can be used on regions or the entire domain.
 (Includes plotting routines)
 
-cz_selfgrav.py
-Scripts used to calculate self-gravity and/or external gravity of cell selections from AMR data.
-Mainly useful for quantifying tidal interactions.
+* pt_samplesph.py
+Script for SPH-sampling the density field of either a region or the entire simulation domain.
+Outputs a particle file that can be used for initializing tracer particles by means of the from_file initmethod.
 
 * automov.py
 Automation Script using ffmpeg for combining sets of plots into videos
+
+cz_selfgrav.py
+Scripts used to calculate self-gravity and/or external gravity of cell selections from AMR data.
+Mainly useful for quantifying tidal interactions.
 
 constants.py
 Contains physical constants and units used by other scripts
